@@ -1,0 +1,3 @@
+rootProject.name = 'simplerpc'
+include 'simplerpc-common', 'simplerpc-client', 'simplerpc-server'
+
