@@ -2,6 +2,8 @@ package com.martianov.simplerpc.common.impl.basic;
 
 import com.martianov.simplerpc.common.intf.IRequest;
 
+import java.util.Arrays;
+
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
@@ -38,5 +40,15 @@ public class BasicRequest extends BasicMessage implements IRequest {
     @Override
     public Object[] getArguments() {
         return arguments;
+    }
+
+    @Override
+    public String toString() {
+        return "BasicRequest{" +
+                "callID=" + getCallID() +
+                ", serviceName='" + serviceName + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", arguments=" + Arrays.toString(arguments) +
+                '}';
     }
 }

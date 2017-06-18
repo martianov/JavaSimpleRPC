@@ -4,8 +4,8 @@ package com.martianov.simplerpc.common.intf;
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
 public interface IMessageFactory {
-    IRequest createRequest(String serviceName, String methodName, Object[] arguments);
-    IResult createResult(Object result);
-    IError createError(String message);
-    IVoidResult createVoidResult();
+    IRequest createRequest(long callID, String serviceName, String methodName, Object[] arguments);
+    IResult createResult(long callID, Object result);
+    IError createError(long callID, String message);
+    IVoidResult createVoidResult(long callID);
 }

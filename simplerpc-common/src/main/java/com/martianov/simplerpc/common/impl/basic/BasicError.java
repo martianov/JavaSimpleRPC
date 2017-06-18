@@ -17,6 +17,14 @@ public class BasicError extends BasicResponse implements IError {
 
     @Override
     public String getMessage() {
-        return null;
+        return message;
+    }
+
+    @Override
+    public String toString() {
+        return "BasicError{" +
+                "callID=" + getCallID() +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

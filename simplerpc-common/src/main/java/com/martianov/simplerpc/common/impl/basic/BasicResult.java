@@ -19,4 +19,12 @@ public class BasicResult extends BasicResponse implements IResult {
     public Object getResult() {
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "BasicResult{" +
+                "callID=" + getCallID() +
+                ", result=" + result +
+                '}';
+    }
 }

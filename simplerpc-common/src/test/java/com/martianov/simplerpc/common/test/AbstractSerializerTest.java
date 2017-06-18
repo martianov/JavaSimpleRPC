@@ -5,6 +5,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
@@ -21,17 +24,18 @@ public abstract class AbstractSerializerTest {
         messageFactory = createFactory();
     }
 
+    private IMessage roundtrip(IMessage message) throws SerializerException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        serializer.write(bos, message);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        return serializer.read(bis);
+    }
+
     @Test
     public void testSerializer() throws SerializerException {
         IRequest req = messageFactory.createRequest("service", "method", new Object[0]);
-
-        byte[] reqBytes = serializer.toBytes(req);
-
-        IMessage deserializedReqUntyped = serializer.fromBytes(reqBytes);
-
-        Assert.assertTrue(deserializedReqUntyped instanceof IRequest);
-
-        IRequest deserializedReq = (IRequest) deserializedReqUntyped;
+        IRequest deserializedReq = (IRequest) roundtrip(req);
 
         Assert.assertEquals(req.getServiceName(), deserializedReq.getServiceName());
         Assert.assertEquals(req.getMethodName(), deserializedReq.getMethodName());

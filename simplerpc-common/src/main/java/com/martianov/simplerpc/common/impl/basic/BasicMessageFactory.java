@@ -7,38 +7,43 @@ import com.martianov.simplerpc.common.intf.*;
  */
 public class BasicMessageFactory implements IMessageFactory {
     @Override
-    public IRequest createRequest(String serviceName, String methodName, Object[] arguments) {
-        BasicRequest request = new BasicRequest();
+    public IRequest createRequest(long callID, String serviceName, String methodName, Object[] arguments) {
+        BasicRequest mesage = new BasicRequest();
 
-        request.setServiceName(serviceName);
-        request.setMethodName(methodName);
-        request.setArguments(arguments);
+        mesage.setCallID(callID);
+        mesage.setServiceName(serviceName);
+        mesage.setMethodName(methodName);
+        mesage.setArguments(arguments);
 
-        return request;
+        return mesage;
     }
 
     @Override
-    public IResult createResult(Object result) {
-        BasicResult res = new BasicResult();
+    public IResult createResult(long callID, Object result) {
+        BasicResult mesage = new BasicResult();
 
-        res.setResult(result);
+        mesage.setCallID(callID);
+        mesage.setResult(result);
 
-        return res;
+        return mesage;
     }
 
     @Override
-    public IError createError(String message) {
-        BasicError err = new BasicError();
+    public IError createError(long callID, String message) {
+        BasicError mesage = new BasicError();
 
-        err.setMessage(message);
+        mesage.setCallID(callID);
+        mesage.setMessage(message);
 
-        return err;
+        return mesage;
     }
 
     @Override
-    public IVoidResult createVoidResult() {
-        BasicVoidResult res = new BasicVoidResult();
+    public IVoidResult createVoidResult(long callID) {
+        BasicVoidResult mesage = new BasicVoidResult();
 
-        return res;
+        mesage.setCallID(callID);
+
+        return mesage;
     }
 }

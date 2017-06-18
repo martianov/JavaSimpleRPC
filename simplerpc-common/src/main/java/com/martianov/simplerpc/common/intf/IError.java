@@ -3,6 +3,6 @@ package com.martianov.simplerpc.common.intf;
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
-public interface IError {
+public interface IError extends IResponse {
     String getMessage();
 }

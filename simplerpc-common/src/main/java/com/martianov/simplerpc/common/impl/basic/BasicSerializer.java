@@ -12,30 +12,24 @@ import java.io.*;
  */
 public class BasicSerializer implements ISerializer {
     @Override
-    public byte[] toBytes(IMessage msg) throws SerializerException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    public IMessage read(InputStream is) throws IOException, SerializerException {
+        IMessage message = null;
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            message = (IMessage) ois.readObject();
+        } catch (ClassNotFoundException | ClassCastException e) {
+            throw new SerializerException("Failed to deserialize message", e);
         }
-
-        return bos.toByteArray();
+        return message;
     }
 
     @Override
-    public IMessage fromBytes(byte[] bytes) throws SerializerException {
-        IMessage msg = null;
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+    public void write(OutputStream os, IMessage msg) throws IOException, SerializerException {
         try {
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            msg = (IMessage) ois.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.writeObject(msg);
+        }  catch (InvalidClassException | NotSerializableException e) {
+            throw new SerializerException("Failed to serialize message", e);
         }
-        return msg;
     }
 }

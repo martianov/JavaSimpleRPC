@@ -19,6 +19,13 @@ public class BasicMessage implements IMessage, Serializable {
 
     @Override
     public long getCallID() {
-        return 0;
+        return callID;
+    }
+
+    @Override
+    public String toString() {
+        return "BasicMessage{" +
+                "callID=" + callID +
+                '}';
     }
 }
