@@ -1,14 +1,13 @@
 package com.martianov.simplerpc.common.connection.impl;
 
 import com.martianov.simplerpc.common.connection.ConnectionException;
-import jdk.internal.util.xml.impl.Input;
 
 import java.io.*;
 
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
-public class BasicPipedConnection extends AbsctractBasicConnection {
+public class BasicPipedConnection extends AbstractBasicConnection {
     private InputStream inputStream;
     private OutputStream outputStream;
     private BasicPipedConnection otherSide;

@@ -10,7 +10,7 @@ import java.io.*;
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
-public abstract class AbsctractBasicConnection implements IConnection {
+public abstract class AbstractBasicConnection implements IConnection {
     private final Object sendMux = new Object();
     private final Object receiveMux = new Object();
 

@@ -11,7 +11,7 @@ import java.net.Socket;
  *
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
-public class BasicSocketConnection extends AbsctractBasicConnection {
+public class BasicSocketConnection extends AbstractBasicConnection {
     private final Socket socket;
 
     private final Object sendMux = new Object();
