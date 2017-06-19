@@ -27,16 +27,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Server implements ClientThreadListener {
     private static final Logger LOG = LogManager.getLogger(Server.class.getName());
 
-    private static final long ACCEPT_LOOP_END_TIMEOUT = 5000;
-
     private final int port;
     private final ServerListener listener;
+
     private final IServiceProvider serviceProvider;
+    private final ServiceMethodCache cache;
 
     private final IMessageFactory messageFactory;
 
-
-    private final ServiceMethodCache cache;
     private ServerSocket serverSocket = null;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -60,6 +58,11 @@ public class Server implements ClientThreadListener {
         this.cache = new ServiceMethodCache(serviceProvider);
     }
 
+    /**
+     * Initialize server.
+     *
+     * @throws ServerException error during server initialization.
+     * */
     private void init() throws ServerException {
         try {
             serverSocket = new ServerSocket(port);
@@ -121,6 +124,9 @@ public class Server implements ClientThreadListener {
         }
     }
 
+    /**
+     * Initialize server and tun accept loop in current thread.
+     * */
     public void serve() throws ServerException {
         init();
 
@@ -131,6 +137,9 @@ public class Server implements ClientThreadListener {
         acceptLoop();
     }
 
+    /**
+     * Initialize server and tun accept loop in separate thread.
+     * */
     public void start() throws ServerException {
         init();
 
@@ -149,6 +158,9 @@ public class Server implements ClientThreadListener {
         }
     }
 
+    /**
+     * Stop server. Method is blocking.
+     * */
     public void stop() {
         stop(null);
     }

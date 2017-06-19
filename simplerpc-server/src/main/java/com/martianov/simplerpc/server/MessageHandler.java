@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
+ * Handles request from client.
+ *
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
 public class MessageHandler implements Runnable {

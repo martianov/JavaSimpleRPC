@@ -1,5 +1,6 @@
 package com.martianov.simplerpc.server.test;
 
+import com.martianov.simplerpc.common.connection.ConnectionException;
 import com.martianov.simplerpc.common.connection.IConnection;
 import com.martianov.simplerpc.common.connection.impl.BasicSocketConnection;
 import com.martianov.simplerpc.common.message.impl.basic.BasicMessageFactory;
@@ -14,9 +15,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -93,20 +96,41 @@ public abstract class AbstractServerTest implements ServerListener, IServiceProv
 
     protected abstract void registerServices();
 
-    protected IMessage send(IMessage message) {
-        IMessage res = null;
+    protected CompletableFuture<IMessage> sendAsync(IMessage message) {
+        final CompletableFuture<IMessage> fut = new CompletableFuture<>();
         try {
             Socket socket = new Socket("localhost", TEST_PORT);
             socket.setSoTimeout(SOCKET_TIMEOUT);
 
             IConnection conn = new BasicSocketConnection(socket);
             conn.send(message);
-            res = conn.receive();
-            socket.close();
+            new Thread(() -> {
+                try {
+                    IMessage res = conn.receive();
+                    fut.complete(res);
+                } catch (ConnectionException e) {
+                    fut.completeExceptionally(e);
+                }
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // skip;
+                }
+            }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail("Failed to send message: " + e.getMessage());
         }
-        return res;
+        return fut;
+    }
+
+    protected IMessage sendSync(IMessage message) throws IOException, ConnectionException {
+        Socket socket = new Socket("localhost", TEST_PORT);
+        socket.setSoTimeout(SOCKET_TIMEOUT);
+
+        IConnection conn = new BasicSocketConnection(socket);
+        conn.send(message);
+        return conn.receive();
     }
 }

@@ -43,7 +43,7 @@ public class ServiceMethodCache {
         if (null == entry) {
             Object service = provider.serviceByName(serviceName);
             if (null == service) {
-                throw new ServiceException("Service \"" + serviceName + "\" not found");
+                throw new ServiceException("Service not found, serviceName=" + serviceName);
             }
             entry = new ServiceEntry(service);
             servicesMap.put(serviceName, entry);
@@ -52,7 +52,7 @@ public class ServiceMethodCache {
         ServiceMethodPair pair = entry.get(methodName);
 
         if (null == pair) {
-            throw new ServiceException("Service \"" + serviceName + "\" doesn't provide method \"" + methodName + "\"");
+            throw new ServiceException("Method not found, serviceName=" + serviceName + ", methodName=" + methodName);
         }
 
         return pair;

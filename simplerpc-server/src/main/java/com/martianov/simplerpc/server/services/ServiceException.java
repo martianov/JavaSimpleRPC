@@ -3,6 +3,8 @@ package com.martianov.simplerpc.server.services;
 import com.martianov.simplerpc.common.SimpleRpcException;
 
 /**
+ * Service exception.
+ *
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
 public class ServiceException extends SimpleRpcException {

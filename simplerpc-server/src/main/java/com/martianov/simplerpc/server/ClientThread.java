@@ -5,13 +5,10 @@ import com.martianov.simplerpc.common.connection.ConnectionException;
 import com.martianov.simplerpc.common.connection.IConnection;
 import com.martianov.simplerpc.common.message.IMessage;
 import com.martianov.simplerpc.common.message.IMessageFactory;
-import com.martianov.simplerpc.common.junk.ISerializer;
-import com.martianov.simplerpc.common.junk.SerializerException;
 import com.martianov.simplerpc.server.services.ServiceMethodCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * RPC Client base thread-safe implementation.
- * 
+ *
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
 public abstract class AbstractClient implements IClient {
