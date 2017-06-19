@@ -1,5 +1,7 @@
 package com.martianov.simplerpc.client;
 
+import com.martianov.simplerpc.common.connection.ConnectionException;
+
 /**
  * Simple RPC Client.
  *
@@ -14,9 +16,10 @@ public interface IClient {
      * @param arguments arguments
      *
      * @return method execution result
-     * @throws ClientException remote method call exception.
+     * @throws RemoteExecutionException exception during execution on remote side.
+     * @throws ConnectionException connection exception
      * */
-    Object remoteCall(String serviceName, String methodName, Object[] arguments) throws ClientException;
+    Object remoteCall(String serviceName, String methodName, Object[] arguments) throws ConnectionException, RemoteExecutionException;
 
     /**
      * Close client and underlying connection.

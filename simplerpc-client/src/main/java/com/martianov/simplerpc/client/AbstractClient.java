@@ -16,13 +16,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * RPC Client base thread-safe implementation.
- *
+ * 
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
 public abstract class AbstractClient implements IClient {
     private static final Logger LOG = LogManager.getLogger(AbstractClient.class.getName());
 
-    private static final int WAITER_MONITOR_COUNT = 20;
+    private static final int WAITER_MONITORS_COUNT = 20;
 
     private final IMessageFactory messageFactory;
     private final IConnection conn;
@@ -31,28 +31,23 @@ public abstract class AbstractClient implements IClient {
 
     private final AtomicBoolean readerFlag = new AtomicBoolean(true);
     private final ConcurrentHashMap<Long, IMessage> results = new ConcurrentHashMap<>();
-    private final AtomicInteger[] waiterMonitors = new AtomicInteger[WAITER_MONITOR_COUNT];
+    private final AtomicInteger[] waiterMonitors = new AtomicInteger[WAITER_MONITORS_COUNT];
 
     public AbstractClient(IMessageFactory messageFactory, IConnection conn) {
         this.messageFactory = messageFactory;
         this.conn = conn;
 
-        for (int i = 0; i < WAITER_MONITOR_COUNT; i++) {
+        for (int i = 0; i < WAITER_MONITORS_COUNT; i++) {
             waiterMonitors[i] = new AtomicInteger(0);
         }
     }
 
     @Override
-    public Object remoteCall(String serviceName, String methodName, Object[] arguments) throws ClientException {
+    public Object remoteCall(String serviceName, String methodName, Object[] arguments) throws ConnectionException, RemoteExecutionException{
         long callID = genCallID.incrementAndGet();
         IMessage req = messageFactory.createRequest(callID, serviceName, methodName, arguments);
 
-        try {
-            conn.send(req);
-        } catch (ConnectionException e) {
-            throw new ClientException("Failed to remote call", e);
-        }
-
+        conn.send(req);
         LOG.info("Request sent: " + req);
 
         IMessage res = null;
@@ -65,8 +60,8 @@ public abstract class AbstractClient implements IClient {
                     try {
                         msg = conn.receive();
                     } catch (ConnectionException e) {
-                        //TODO: proper message
-                        throw new ClientException("Failed to read message", e);
+                        readerFlag.set(true);
+                        throw e;
                     }
 
                     if (msg.getCallID() == callID) {
@@ -110,14 +105,14 @@ public abstract class AbstractClient implements IClient {
         if (res instanceof IResult) {
             result = ((IResult) res).getResult();
         } else if (res instanceof IError) {
-            throw new ClientException(((IError) res).getMessage());
+            throw new RemoteExecutionException(((IError) res).getMessage());
         }
 
         return result;
     }
 
     private AtomicInteger getWaiterMonitor(long callID) {
-        return waiterMonitors[(int) callID % WAITER_MONITOR_COUNT];
+        return waiterMonitors[(int) callID % WAITER_MONITORS_COUNT];
     }
 
     private void wakeUpAny() {
