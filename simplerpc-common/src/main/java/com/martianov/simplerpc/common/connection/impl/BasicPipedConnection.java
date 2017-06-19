@@ -1,5 +1,8 @@
 package com.martianov.simplerpc.common.connection.impl;
 
+import com.martianov.simplerpc.common.connection.ConnectionException;
+import jdk.internal.util.xml.impl.Input;
+
 import java.io.*;
 
 /**
@@ -49,5 +52,29 @@ public class BasicPipedConnection extends AbsctractBasicConnection {
 
     public BasicPipedConnection getOtherSide() {
         return otherSide;
+    }
+
+    private void closeStreamQuietly(OutputStream s) {
+        try {
+            s.close();
+        } catch (IOException e) {
+            //skip
+        }
+    }
+
+    private void closeStreamQuietly(InputStream s) {
+        try {
+            s.close();
+        } catch (IOException e) {
+            //skip
+        }
+    }
+
+    @Override
+    public void close() throws ConnectionException {
+        closeStreamQuietly(inputStream);
+        closeStreamQuietly(outputStream);
+        closeStreamQuietly(otherSide.inputStream);
+        closeStreamQuietly(otherSide.outputStream);
     }
 }

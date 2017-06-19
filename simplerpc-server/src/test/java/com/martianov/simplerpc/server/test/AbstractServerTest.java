@@ -1,10 +1,12 @@
 package com.martianov.simplerpc.server.test;
 
-import com.martianov.simplerpc.common.impl.basic.BasicMessageFactory;
-import com.martianov.simplerpc.common.impl.basic.BasicSerializer;
-import com.martianov.simplerpc.common.intf.IMessage;
-import com.martianov.simplerpc.common.intf.IMessageFactory;
-import com.martianov.simplerpc.common.intf.ISerializer;
+import com.martianov.simplerpc.common.connection.IConnection;
+import com.martianov.simplerpc.common.connection.impl.BasicSocketConnection;
+import com.martianov.simplerpc.common.message.impl.basic.BasicMessageFactory;
+import com.martianov.simplerpc.common.junk.BasicSerializer;
+import com.martianov.simplerpc.common.message.IMessage;
+import com.martianov.simplerpc.common.message.IMessageFactory;
+import com.martianov.simplerpc.common.junk.ISerializer;
 import com.martianov.simplerpc.server.Server;
 import com.martianov.simplerpc.server.ServerListener;
 import com.martianov.simplerpc.server.services.IServiceProvider;
@@ -28,7 +30,6 @@ public abstract class AbstractServerTest implements ServerListener, IServiceProv
 
     private Server server;
     private IMessageFactory messageFactory;
-    private ISerializer serializer;
     private final AtomicBoolean serverStarted = new AtomicBoolean(false);
     private final Map<String, Object> servicesMap = new HashMap<>();
 
@@ -44,9 +45,8 @@ public abstract class AbstractServerTest implements ServerListener, IServiceProv
         registerServices();
 
         messageFactory = createMessageFactory();
-        serializer = createSerializer();
 
-        server = new Server(TEST_PORT, this, this, messageFactory, serializer);
+        server = new Server(TEST_PORT, this, this, messageFactory);
 
         server.start();
 
@@ -86,16 +86,8 @@ public abstract class AbstractServerTest implements ServerListener, IServiceProv
         return new BasicMessageFactory();
     }
 
-    protected ISerializer createSerializer() {
-        return new BasicSerializer();
-    }
-
     protected IMessageFactory messageFactory() {
         return messageFactory;
-    }
-
-    protected ISerializer serializer() {
-        return serializer;
     }
 
 
@@ -107,8 +99,9 @@ public abstract class AbstractServerTest implements ServerListener, IServiceProv
             Socket socket = new Socket("localhost", TEST_PORT);
             socket.setSoTimeout(SOCKET_TIMEOUT);
 
-            serializer.write(socket.getOutputStream(), message);
-            res = serializer.read(socket.getInputStream());
+            IConnection conn = new BasicSocketConnection(socket);
+            conn.send(message);
+            res = conn.receive();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();

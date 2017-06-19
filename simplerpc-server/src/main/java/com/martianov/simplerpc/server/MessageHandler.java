@@ -1,6 +1,11 @@
 package com.martianov.simplerpc.server;
 
-import com.martianov.simplerpc.common.intf.*;
+import com.martianov.simplerpc.common.connection.ConnectionException;
+import com.martianov.simplerpc.common.connection.IConnection;
+import com.martianov.simplerpc.common.junk.*;
+import com.martianov.simplerpc.common.message.IMessage;
+import com.martianov.simplerpc.common.message.IMessageFactory;
+import com.martianov.simplerpc.common.message.IRequest;
 import com.martianov.simplerpc.server.services.ServiceException;
 import com.martianov.simplerpc.server.services.ServiceMethodCache;
 import com.martianov.simplerpc.server.services.ServiceMethodPair;
@@ -20,14 +25,14 @@ public class MessageHandler implements Runnable {
     private final Socket socket;
     private final ServiceMethodCache cache;
     private final IMessageFactory messageFactory;
-    private final ISerializer serializer;
+    private final IConnection conn;
 
-    public MessageHandler(IMessage message, Socket socket, ServiceMethodCache cache, IMessageFactory messageFactory, ISerializer serializer) {
+    public MessageHandler(IMessage message, Socket socket, ServiceMethodCache cache, IMessageFactory messageFactory, IConnection conn) {
         this.message = message;
         this.socket = socket;
         this.cache = cache;
         this.messageFactory = messageFactory;
-        this.serializer = serializer;
+        this.conn = conn;
     }
 
     private String logPrefix() {
@@ -61,10 +66,10 @@ public class MessageHandler implements Runnable {
         }
 
         try {
-            serializer.write(socket.getOutputStream(), res);
+            conn.send(res);
 
             LOG.info(logPrefix() + "Response sent: " + res);
-        } catch (IOException | SerializerException e) {
+        } catch (ConnectionException e) {
             LOG.error(logPrefix() + "Failed to send response", e);
         }
     }

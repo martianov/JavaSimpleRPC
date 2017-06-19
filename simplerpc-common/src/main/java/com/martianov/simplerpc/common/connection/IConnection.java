@@ -25,4 +25,11 @@ public interface IConnection {
      * @throws ConnectionException I/O error.
      * */
     IMessage receive() throws ConnectionException;
+
+    /**
+     * Close connection.
+     *
+     * @throws ConnectionException error during connection closing.
+     */
+    void close() throws ConnectionException;
 }

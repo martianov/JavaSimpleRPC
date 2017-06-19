@@ -1,9 +1,10 @@
 package com.martianov.simplerpc.server;
 
-import com.martianov.simplerpc.common.impl.basic.BasicMessageFactory;
-import com.martianov.simplerpc.common.impl.basic.BasicSerializer;
-import com.martianov.simplerpc.common.intf.IMessageFactory;
-import com.martianov.simplerpc.common.intf.ISerializer;
+import com.martianov.simplerpc.common.connection.impl.BasicSocketConnection;
+import com.martianov.simplerpc.common.message.impl.basic.BasicMessageFactory;
+import com.martianov.simplerpc.common.junk.BasicSerializer;
+import com.martianov.simplerpc.common.message.IMessageFactory;
+import com.martianov.simplerpc.common.junk.ISerializer;
 import com.martianov.simplerpc.server.services.IServiceProvider;
 import com.martianov.simplerpc.server.services.ServiceMethodCache;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,7 @@ public class Server implements ClientThreadListener {
     private final IServiceProvider serviceProvider;
 
     private final IMessageFactory messageFactory;
-    private final ISerializer serializer;
+
 
     private final ServiceMethodCache cache;
     private ServerSocket serverSocket = null;
@@ -48,14 +49,13 @@ public class Server implements ClientThreadListener {
     private Thread serveThread = null;
 
     public Server(int port, IServiceProvider serviceProvider) {
-        this(port, null, serviceProvider, new BasicMessageFactory(), new BasicSerializer());
+        this(port, null, serviceProvider, new BasicMessageFactory());
     }
 
-    public Server(int port, ServerListener listener, IServiceProvider serviceProvider, IMessageFactory messageFactory, ISerializer serializer) {
+    public Server(int port, ServerListener listener, IServiceProvider serviceProvider, IMessageFactory messageFactory) {
         this.port = port;
         this.listener = listener;
         this.messageFactory = messageFactory;
-        this.serializer = serializer;
         this.serviceProvider = serviceProvider;
         this.cache = new ServiceMethodCache(serviceProvider);
     }
@@ -92,7 +92,9 @@ public class Server implements ClientThreadListener {
 
                     String threadName = "Client Thread[" + socket.getInetAddress() + ":" + socket.getPort() + "]";
 
-                    ClientThread thread = new ClientThread(threadName, socket, serializer, executorService, cache, messageFactory, this);
+
+
+                    ClientThread thread = new ClientThread(threadName, socket, new BasicSocketConnection(socket), executorService, cache, messageFactory, this);
                     clientThreads.put(threadName, thread);
 
                     thread.start();

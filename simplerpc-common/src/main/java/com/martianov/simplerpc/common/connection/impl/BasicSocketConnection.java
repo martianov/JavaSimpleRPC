@@ -69,7 +69,11 @@ public class BasicSocketConnection extends AbsctractBasicConnection {
      *
      * @throws IOException error during closing of underlying socket.
      * */
-    public void close() throws IOException {
-        socket.close();
+    public void close() throws ConnectionException {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new ConnectionException("Failed to close socket", e);
+        }
     }
 }

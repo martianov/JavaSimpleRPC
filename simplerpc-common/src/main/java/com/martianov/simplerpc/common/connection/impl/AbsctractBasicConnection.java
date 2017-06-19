@@ -1,5 +1,6 @@
 package com.martianov.simplerpc.common.connection.impl;
 
+import com.martianov.simplerpc.common.connection.ConnectionClosedException;
 import com.martianov.simplerpc.common.connection.ConnectionException;
 import com.martianov.simplerpc.common.connection.IConnection;
 import com.martianov.simplerpc.common.message.IMessage;
@@ -51,6 +52,8 @@ public abstract class AbsctractBasicConnection implements IConnection {
                     ois = new ObjectInputStream(inputStream());
                 }
                 message = (IMessage) ois.readObject();
+            } catch (EOFException e) {
+                throw new ConnectionClosedException("Connection closed.");
             } catch (IOException e) {
                 processReceiveException(e);
                 throw new ConnectionException("Failed to receive message", e);

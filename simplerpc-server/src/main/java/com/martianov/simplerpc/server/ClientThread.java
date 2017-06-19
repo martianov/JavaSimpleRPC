@@ -1,9 +1,12 @@
 package com.martianov.simplerpc.server;
 
-import com.martianov.simplerpc.common.intf.IMessage;
-import com.martianov.simplerpc.common.intf.IMessageFactory;
-import com.martianov.simplerpc.common.intf.ISerializer;
-import com.martianov.simplerpc.common.intf.SerializerException;
+import com.martianov.simplerpc.common.connection.ConnectionClosedException;
+import com.martianov.simplerpc.common.connection.ConnectionException;
+import com.martianov.simplerpc.common.connection.IConnection;
+import com.martianov.simplerpc.common.message.IMessage;
+import com.martianov.simplerpc.common.message.IMessageFactory;
+import com.martianov.simplerpc.common.junk.ISerializer;
+import com.martianov.simplerpc.common.junk.SerializerException;
 import com.martianov.simplerpc.server.services.ServiceMethodCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,17 +25,17 @@ public class ClientThread extends Thread {
 
     private final AtomicBoolean stopped = new AtomicBoolean(false);
     private final Socket socket;
-    private final ISerializer serializer;
+    private final IConnection conn;
     private final ExecutorService executorService;
     private final ServiceMethodCache cache;
     private final IMessageFactory factory;
     private final ClientThreadListener listener;
 
-    public ClientThread(String name, Socket socket, ISerializer serializer, ExecutorService executorService,
+    public ClientThread(String name, Socket socket, IConnection conn, ExecutorService executorService,
                         ServiceMethodCache cache, IMessageFactory factory, ClientThreadListener listener) {
         super(name);
         this.socket = socket;
-        this.serializer = serializer;
+        this.conn = conn;
         this.executorService = executorService;
         this.cache = cache;
         this.factory = factory;
@@ -43,15 +46,15 @@ public class ClientThread extends Thread {
     public void run() {
         while (!stopped.get()) {
             try {
-                IMessage message = serializer.read(socket.getInputStream());
+                IMessage message = conn.receive();
                 LOG.info("Message received: " + message);
 
-                executorService.execute(new MessageHandler(message, socket, cache, factory, serializer));
-            } catch (EOFException e) {
+                executorService.execute(new MessageHandler(message, socket, cache, factory, conn));
+            } catch (ConnectionClosedException e) {
                 LOG.info("Client disconnected.");
                 listener.clientThreadStopped(getName());
                 break;
-            } catch (IOException | SerializerException e) {
+            } catch (ConnectionException e) {
                 if (!stopped.get()) {
                     LOG.error("Failed to read message", e);
                 }
