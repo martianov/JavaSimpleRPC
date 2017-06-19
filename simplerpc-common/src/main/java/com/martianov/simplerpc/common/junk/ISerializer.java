@@ -1,4 +1,6 @@
-package com.martianov.simplerpc.common.intf;
+package com.martianov.simplerpc.common.junk;
+
+import com.martianov.simplerpc.common.message.IMessage;
 
 import java.io.IOException;
 import java.io.InputStream;

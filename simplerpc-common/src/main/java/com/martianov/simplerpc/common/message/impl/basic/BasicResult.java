@@ -1,6 +1,6 @@
-package com.martianov.simplerpc.common.impl.basic;
+package com.martianov.simplerpc.common.message.impl.basic;
 
-import com.martianov.simplerpc.common.intf.IResult;
+import com.martianov.simplerpc.common.message.IResult;
 
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>

@@ -1,4 +1,4 @@
-package com.martianov.simplerpc.common.intf;
+package com.martianov.simplerpc.common.message;
 
 /**
  * @author Andrey Martyanov <martianovas@gmail.com>

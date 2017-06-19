@@ -1,4 +1,4 @@
-package com.martianov.simplerpc.common.intf;
+package com.martianov.simplerpc.common.junk;
 
 import com.martianov.simplerpc.common.SimpleRpcException;
 

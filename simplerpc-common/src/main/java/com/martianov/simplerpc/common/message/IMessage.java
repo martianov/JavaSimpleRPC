@@ -1,4 +1,4 @@
-package com.martianov.simplerpc.common.intf;
+package com.martianov.simplerpc.common.message;
 
 /**
  * Base interface for rpc requests and responses.

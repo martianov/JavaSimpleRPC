@@ -1,6 +1,6 @@
-package com.martianov.simplerpc.common.impl.basic;
+package com.martianov.simplerpc.common.message.impl.basic;
 
-import com.martianov.simplerpc.common.intf.IRequest;
+import com.martianov.simplerpc.common.message.IRequest;
 
 import java.util.Arrays;
 
