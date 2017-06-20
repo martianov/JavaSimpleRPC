@@ -48,6 +48,16 @@ project(':simplerpc-client') {
     }
 }
 
+project(':simplerpc-example') {
+    dependencies {
+        compile project(':simplerpc-common')
+        compile project(':simplerpc-client')
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.2'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.2'
+        testCompile project(':simplerpc-server')
+    }
+}
+
 task build(type: Copy) {
     dependsOn subprojects.build
 
