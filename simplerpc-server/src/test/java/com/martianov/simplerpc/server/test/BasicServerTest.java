@@ -44,9 +44,10 @@ public class  BasicServerTest extends AbstractServerTest {
 
     @Test
     public void testReturnValue() throws IOException, ConnectionException {
-        System.out.println(sendSync(messageFactory().createRequest(0, "atomicLong", "incrementAndGet", new Object[0])));
+        IMessage res = sendSync(messageFactory().createRequest(0, "atomicLong", "incrementAndGet", new Object[0]));
 
-        Assert.assertEquals(1, atomicLongService.get());
+        Assert.assertTrue(res instanceof IResult);
+        Assert.assertEquals(atomicLongService.get(), ((IResult)res).getResult());
     }
 
     @Test
