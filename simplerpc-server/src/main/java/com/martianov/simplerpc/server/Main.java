@@ -70,7 +70,7 @@ public class Main {
             Runtime.getRuntime().addShutdownHook(new Thread(Utils.genThreadName("ShutdownHook")) {
                 @Override
                 public void run() {
-                    LOG.info("Ctrl+C: stopping server.. ");
+                    LOG.info("Ctrl+C: `stopping server.. ");
                     server.stop();
                 }
             });

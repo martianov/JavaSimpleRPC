@@ -45,34 +45,38 @@ public class MessageHandler implements Runnable {
 
     @Override
     public void run() {
-        if (!(message instanceof IRequest)) {
-            LOG.error(logPrefix() + "Unexpected message type: " + message.getClass().getName());
-            return;
-        }
-
-        IRequest req = (IRequest) message;
-
-        IMessage res;
-
         try {
-            ServiceMethodPair pair = cache.get(req.getServiceName(), req.getMethodName());
-            Object result = pair.invoke(req.getArguments());
-
-            if (pair.isVoid()) {
-                res = messageFactory.createVoidResult(message.getCallID());
-            } else {
-                res = messageFactory.createResult(message.getCallID(), result);
+            if (!(message instanceof IRequest)) {
+                LOG.error(logPrefix() + "Unexpected message type: " + message.getClass().getName());
+                return;
             }
-        } catch (ServiceException e) {
-            res = messageFactory.createError(message.getCallID(), e.getMessage());
-        }
 
-        try {
-            conn.send(res);
+            IRequest req = (IRequest) message;
 
-            LOG.info(logPrefix() + "Response sent: " + res);
-        } catch (ConnectionException e) {
-            LOG.error(logPrefix() + "Failed to send response", e);
+            IMessage res;
+
+            try {
+                ServiceMethodPair pair = cache.get(req.getServiceName(), req.getMethodName());
+                Object result = pair.invoke(req.getArguments());
+
+                if (pair.isVoid()) {
+                    res = messageFactory.createVoidResult(message.getCallID());
+                } else {
+                    res = messageFactory.createResult(message.getCallID(), result);
+                }
+            } catch (ServiceException e) {
+                res = messageFactory.createError(message.getCallID(), e.getMessage());
+            }
+
+            try {
+                conn.send(res);
+
+                LOG.debug(logPrefix() + "Response sent: " + res);
+            } catch (ConnectionException e) {
+                LOG.error(logPrefix() + "Failed to send response", e);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

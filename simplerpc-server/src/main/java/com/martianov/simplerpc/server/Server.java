@@ -2,9 +2,7 @@ package com.martianov.simplerpc.server;
 
 import com.martianov.simplerpc.common.connection.impl.BasicSocketConnection;
 import com.martianov.simplerpc.common.message.impl.basic.BasicMessageFactory;
-import com.martianov.simplerpc.common.junk.BasicSerializer;
 import com.martianov.simplerpc.common.message.IMessageFactory;
-import com.martianov.simplerpc.common.junk.ISerializer;
 import com.martianov.simplerpc.server.services.IServiceProvider;
 import com.martianov.simplerpc.server.services.ServiceMethodCache;
 import org.apache.logging.log4j.LogManager;
@@ -13,10 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -37,7 +32,13 @@ public class Server implements ClientThreadListener {
 
     private ServerSocket serverSocket = null;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private ExecutorService executorService = Executors.newFixedThreadPool(10, new ThreadFactory() {
+        int threadNum = 0;
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "Server Worker Thread #" + threadNum++);
+        }
+    });
 
     private final AtomicBoolean stopServer = new AtomicBoolean(true);
     private final AtomicBoolean acceptLoopEnded = new AtomicBoolean(true);
@@ -189,7 +190,6 @@ public class Server implements ClientThreadListener {
 
 
             for (ClientThread thread: clientThreads.values()) {
-                System.out.println("stopping " + thread.getName() );
                 thread.stopThread();
             }
             clientThreads.clear();

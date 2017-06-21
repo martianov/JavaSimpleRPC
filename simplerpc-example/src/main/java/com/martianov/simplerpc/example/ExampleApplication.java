@@ -57,8 +57,10 @@ public class ExampleApplication {
         workers = new WorkerThread[clientsCount * workersCount];
         for (int i = 0; i < clientsCount; i++) {
             for (int j = 0; j < workersCount; j++) {
-                WorkerThread worker = new WorkerThread(clients[i], serviceNames[(i*clientsCount + j) % serviceNames.length], methodNames[(i*clientsCount + j) % methodNames.length], callCount, allReady);
-                workers[i*clientsCount + j] = worker;
+                int idx = i*workersCount + j;
+                WorkerThread worker = new WorkerThread("Example App Thread #" + i + "-" + j, clients[i],
+                        serviceNames[idx % serviceNames.length], methodNames[idx % methodNames.length], callCount, allReady);
+                workers[idx] = worker;
                 worker.start();
             }
         }

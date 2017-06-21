@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -44,11 +45,13 @@ public class ClientThread extends Thread {
         while (!stopped.get()) {
             try {
                 IMessage message = conn.receive();
-                LOG.info("Message received: " + message);
+                LOG.debug("Message received: " + message);
 
+//                System.out.println("bb1");
                 executorService.execute(new MessageHandler(message, socket, cache, factory, conn));
+//                System.out.println("cc1");
             } catch (ConnectionClosedException e) {
-                LOG.info("Client disconnected.");
+                LOG.debug("Client disconnected.");
                 listener.clientThreadStopped(getName());
                 break;
             } catch (ConnectionException e) {

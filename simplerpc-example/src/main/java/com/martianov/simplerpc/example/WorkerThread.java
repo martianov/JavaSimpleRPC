@@ -21,7 +21,8 @@ public class WorkerThread extends Thread {
     private final long callCount;
     private final CyclicBarrier allReady;
 
-    public WorkerThread(IClient client, String serviceName, String methodName, long callCount, CyclicBarrier allReady) {
+    public WorkerThread(String name, IClient client, String serviceName, String methodName, long callCount, CyclicBarrier allReady) {
+        super(name);
         this.client = client;
         this.serviceName = serviceName;
         this.methodName = methodName;
@@ -36,7 +37,6 @@ public class WorkerThread extends Thread {
         } catch (InterruptedException | BrokenBarrierException e) {
             LOG.error("Failed to await on cyclic barrier", e);
         }
-
         for (int i = 0; i < callCount; i++) {
             try {
                 client.remoteCall(serviceName, methodName, new Object[0]);

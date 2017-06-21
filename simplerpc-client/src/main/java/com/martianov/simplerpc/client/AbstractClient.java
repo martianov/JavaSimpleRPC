@@ -48,12 +48,17 @@ public abstract class AbstractClient implements IClient {
         IMessage req = messageFactory.createRequest(callID, serviceName, methodName, arguments);
 
         conn.send(req);
-        LOG.info("Request sent: " + req);
+        LOG.debug("Request sent: " + req);
 
         IMessage res = null;
         while (null == res) {
             if (readerFlag.compareAndSet(true, false)) {
                 //I'm the reader
+
+                if (results.containsKey(callID)) {
+                    res = results.remove(callID);
+
+                }
 
                 while (null == res) {
                     IMessage msg;
@@ -66,8 +71,6 @@ public abstract class AbstractClient implements IClient {
 
                     if (msg.getCallID() == callID) {
                         res = msg;
-                        readerFlag.set(true);
-                        wakeUpAny();
                     } else {
                         Object waiterMonitor = getWaiterMonitor(msg.getCallID());
                         synchronized (waiterMonitor) {
@@ -76,6 +79,9 @@ public abstract class AbstractClient implements IClient {
                         }
                     }
                 }
+
+                readerFlag.set(true);
+                wakeUpAny();
             } else {
                 //I'm waiter
                 AtomicInteger waiterMonitor = getWaiterMonitor(callID);
@@ -100,7 +106,7 @@ public abstract class AbstractClient implements IClient {
 
         Object result = null;
 
-        LOG.info("Response received: " + res);
+        LOG.debug("Response received: " + res);
 
         if (res instanceof IResult) {
             result = ((IResult) res).getResult();
