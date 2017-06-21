@@ -59,6 +59,13 @@ public class Main {
 
 
     public static void main (String[] args) {
+        if (args.length != 1) {
+            System.out.println("Wrong arguments number.\n" +
+                    "Usage: port\n" +
+                    "Please see README.md for more details.\n");
+            System.exit(1);
+        }
+
         int port = Integer.parseInt(args[0]);
 
         try {
@@ -70,7 +77,7 @@ public class Main {
             Runtime.getRuntime().addShutdownHook(new Thread(Utils.genThreadName("ShutdownHook")) {
                 @Override
                 public void run() {
-                    LOG.info("Ctrl+C: `stopping server.. ");
+                    LOG.info("Ctrl+C: stopping server.. ");
                     server.stop();
                 }
             });

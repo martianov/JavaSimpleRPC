@@ -38,7 +38,7 @@ public class AppTest implements IServiceProvider {
     public void testExampleApp() throws InterruptedException {
         int clientsCount = 5;
         int workersCount = 4;
-        int callsCount = 100000;
+        int callsCount = 1000;
 
         ExampleApplication app = new ExampleApplication("localhost", SERVER_PORT, clientsCount, workersCount, callsCount,
                 new String[] {"atomicLong", "atomicLong2"}, new String[] {"incrementAndGet", "incrementAndGet"});

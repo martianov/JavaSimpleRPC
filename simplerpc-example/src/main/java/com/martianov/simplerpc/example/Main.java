@@ -8,7 +8,10 @@ package com.martianov.simplerpc.example;
 public class Main {
     public static void main(String[] args) {
         if (args.length != 7 || (args.length % 2 != 1)) {
-            throw new IllegalArgumentException("Not enough arguments");
+            System.out.println("Not enough arguments.\n" +
+                    "Usage: host port clientsCount workersCount callsCount serviceName methodName [serviceName methodName]\n" +
+                    "Please see README.md for more details.\n");
+            System.exit(1);
         }
 
         String host = args[0];

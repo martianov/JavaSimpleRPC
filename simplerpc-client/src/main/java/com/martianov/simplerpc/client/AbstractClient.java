@@ -53,11 +53,9 @@ public abstract class AbstractClient implements IClient {
         IMessage res = null;
         while (null == res) {
             if (readerFlag.compareAndSet(true, false)) {
-                //I'm the reader
-
+                //I'm reader
                 if (results.containsKey(callID)) {
                     res = results.remove(callID);
-
                 }
 
                 while (null == res) {
