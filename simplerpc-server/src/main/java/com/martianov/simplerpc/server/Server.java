@@ -126,7 +126,7 @@ public class Server implements ClientThreadListener {
     }
 
     /**
-     * Initialize server and tun accept loop in current thread.
+     * Initialize server and run accept loop in current thread.
      * */
     public void serve() throws ServerException {
         init();
@@ -139,7 +139,7 @@ public class Server implements ClientThreadListener {
     }
 
     /**
-     * Initialize server and tun accept loop in separate thread.
+     * Initialize server and run accept loop in separate thread.
      * */
     public void start() throws ServerException {
         init();
