@@ -23,10 +23,12 @@ subprojects {
 
     apply plugin: 'java'
     sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
     }
+
     dependencies {
         testCompile "junit:junit:4.12"
     }
@@ -58,13 +60,20 @@ project(':simplerpc-example') {
     }
 }
 
+task copyDeps(type: Copy) {
+    from project(':simplerpc-example').configurations.compile
+    into 'dist/'
+}
+
+
 task build(type: Copy) {
-    dependsOn subprojects.build
+    dependsOn subprojects.build, copyDeps
 
     def jars=[]
     subprojects.each {
         jars+=it.libsDir
     }
+
     from jars
     into 'dist/'
 }

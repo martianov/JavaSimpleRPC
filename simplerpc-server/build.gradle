@@ -9,16 +9,8 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-//    compile ':simplerpc-common'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
 jar {
     manifest {
-//    attributes(
-//            "Class-Path": configurations.compile.collect { it.getName() }.join(' '))
         attributes('Main-Class': 'com.martianov.simplerpc.server.Main')
-
     }
-
 }

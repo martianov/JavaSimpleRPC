@@ -41,14 +41,13 @@ public class ClientThread extends Thread {
 
     @Override
     public void run() {
+        LOG.debug("Client connected.");
         while (!stopped.get()) {
             try {
                 IMessage message = conn.receive();
                 LOG.debug("Message received: " + message);
 
-//                System.out.println("bb1");
                 executorService.execute(new MessageHandler(message, socket, cache, factory, conn));
-//                System.out.println("cc1");
             } catch (ConnectionClosedException e) {
                 LOG.debug("Client disconnected.");
                 listener.clientThreadStopped(getName());
