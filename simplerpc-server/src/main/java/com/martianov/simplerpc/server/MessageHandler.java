@@ -2,7 +2,6 @@ package com.martianov.simplerpc.server;
 
 import com.martianov.simplerpc.common.connection.ConnectionException;
 import com.martianov.simplerpc.common.connection.IConnection;
-import com.martianov.simplerpc.common.junk.*;
 import com.martianov.simplerpc.common.message.IMessage;
 import com.martianov.simplerpc.common.message.IMessageFactory;
 import com.martianov.simplerpc.common.message.IRequest;
@@ -12,7 +11,6 @@ import com.martianov.simplerpc.server.services.ServiceMethodPair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.net.Socket;
 
 /**

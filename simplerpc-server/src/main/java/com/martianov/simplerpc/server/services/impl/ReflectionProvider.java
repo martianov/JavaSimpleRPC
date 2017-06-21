@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Creates services using class name.
  *
  * @author Andrey Martyanov <martianovas@gmail.com>
  */
