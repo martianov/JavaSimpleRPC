@@ -1,5 +1,6 @@
 package com.martianov.simplerpc.client.test;
 
+import com.martianov.simplerpc.client.Client;
 import com.martianov.simplerpc.client.IClient;
 import com.martianov.simplerpc.client.RemoteExecutionException;
 import com.martianov.simplerpc.client.test.stub.TestClient;
@@ -51,8 +52,10 @@ public class AbstractClientTest {
             try {
                 conn.send(message);
             } catch (ConnectionException e) {
-                synchronized (failures) {
-                    failures.add(e);
+                if (!client.isClosed()) {
+                    synchronized (failures) {
+                        failures.add(e);
+                    }
                 }
             }
         }
