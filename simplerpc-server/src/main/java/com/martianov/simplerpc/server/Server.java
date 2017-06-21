@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class Server implements ClientThreadListener {
     private static final Logger LOG = LogManager.getLogger(Server.class.getName());
+    private static final int THREAD_POOL_SIZE = 10;
 
     private final int port;
     private final ServerListener listener;
@@ -32,7 +33,7 @@ public class Server implements ClientThreadListener {
 
     private ServerSocket serverSocket = null;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(10, new ThreadFactory() {
+    private ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE, new ThreadFactory() {
         int threadNum = 0;
         @Override
         public Thread newThread(Runnable r) {
