@@ -32,6 +32,12 @@ public class  BasicServerTest extends AbstractServerTest {
         public void stringArg(String arg) {}
     }
 
+    public static class FailService {
+        public void fail() throws Exception {
+            throw new Exception("Always fails");
+        }
+    }
+
     AtomicLong atomicLongService =  new AtomicLong(0);
 
     @Override
@@ -40,6 +46,7 @@ public class  BasicServerTest extends AbstractServerTest {
         addService("delayService", new DelayService());
         addService("service", new Object());
         addService("stringService", new StringService());
+        addService("failService", new FailService());
     }
 
     @Test
@@ -100,5 +107,13 @@ public class  BasicServerTest extends AbstractServerTest {
     public void testVoidFunction() throws IOException, ConnectionException {
         IMessage res = sendSync(messageFactory().createRequest(0, "stringService", "stringArg", new Object[] { "a" }));
         Assert.assertTrue(res instanceof IVoidResult);
+    }
+
+    @Test
+    public void testMethodFails() throws IOException, ConnectionException {
+        IMessage res = sendSync(messageFactory().createRequest(0, "failService", "fail", new Object[]{}));
+
+        Assert.assertTrue(res instanceof IError);
+        Assert.assertTrue("Unexpected error message", ((IError) res).getMessage().startsWith("Always fails"));
     }
 }

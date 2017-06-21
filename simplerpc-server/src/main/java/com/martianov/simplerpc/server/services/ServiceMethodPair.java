@@ -22,7 +22,9 @@ public class ServiceMethodPair {
     public Object invoke(Object[] args) throws ServiceException {
         try {
             return method.invoke(service, args);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
+            throw new ServiceException(e.getCause().getMessage(), e);
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
