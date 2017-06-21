@@ -16,7 +16,7 @@ Build distribution:
 ./gradlew clean build
 ```
 
-Built jars will be places under *dist/* directory.
+Built jars will be placeв under *dist/* directory.
 
 ## Run
 
